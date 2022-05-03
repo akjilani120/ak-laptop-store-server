@@ -5,12 +5,19 @@ const app = express()
 const port = process.env.PORT || 5000;
 
 
-const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://laptopStore:W67upCNDzg9x51dn@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const collection = client.db("laptopStore").collection("laptopProduct");
 async function run () {
   try{
+    await client.connect();
+    app.get('/products', async (req , res) =>{
+      const query ={};
+      const cursor = collection.find(query)
+      const result = await cursor.toArray();
+      res.send(result)
 
+    })
   }finally{
 
   }

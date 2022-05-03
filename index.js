@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://laptopStore:<password>@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("laptopStore").collection("laptopProduct");
-  // perform actions on the collection object
-  client.close();
-});
 
+const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const collection = client.db("laptopStore").collection("laptopProduct");
+async function run () {
+  try{
+
+  }finally{
+
+  }
+}
+run().catch(console.dir)
 
 // middle ware
 app.use(cors())

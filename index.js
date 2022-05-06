@@ -20,7 +20,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
-
+    // use to email and email user add details
     app.get('/myproducts', async(req,res)=>{
       const email=  req.query.email;
       const query= {email}
@@ -28,24 +28,26 @@ async function run() {
       const result= await cursor.toArray()
       res.send(result)
     })
-    
+    // case to single item
     app.get('/products/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) }
       const result = await collection.findOne(query);
       res.send(result)
     })
-    app.put('/products/:id', async (req, res) => {
-      const id = req.params.id
-      const updateQuantity = req.body
-      const filter = { _id: ObjectId(id) };
-      const options = { upsert: true };
-      const updateDoc = {
-        $set: updateQuantity
-      };
-      const result = await collection.updateOne(filter, updateDoc, options);
+    // update data
+    app.put('/products/:id', async(req, res) =>{
+      const id =req.params.id;
+      const userUpdate = req.body;
+      const filter ={ _id: ObjectId(id) }
+      const option ={ upsert:true}
+      const userDoc ={
+        $set:userUpdate
+      }
+      const result = await collection.updateOne(filter , userDoc, option);
       res.send(result)
     })
+    // delete item
     app.delete('/products/:id', async(req , res) =>{
       const id = req.params.id
       const query = { _id: ObjectId(id)}

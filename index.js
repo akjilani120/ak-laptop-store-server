@@ -10,6 +10,7 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const collection = client.db("laptopStore").collection("laptopProduct");
+
 async function run() {
   try {
     await client.connect();
@@ -19,6 +20,15 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+
+    app.get('/myproducts', async(req,res)=>{
+      const email=  req.query.email;
+      const query= {email}
+      const  cursor= collection.find(query)
+      const result= await cursor.toArray()
+      res.send(result)
+    })
+    
     app.get('/products/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) }
@@ -42,6 +52,7 @@ async function run() {
       const result = await collection.deleteOne(query);
       res.send(result)
     })
+    
     app.post('/products', async (req , res) =>{
       const newProduct = req.body;
       const result = await collection.insertOne(newProduct)

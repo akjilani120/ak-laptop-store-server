@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-// const res = require('express/lib/response');
+const jwt = require("jsonwebtoken")
 const app = express()
 const port = process.env.PORT || 5000;
 require('dotenv').config()
@@ -14,6 +14,14 @@ const collection = client.db("laptopStore").collection("laptopProduct");
 async function run() {
   try {
     await client.connect();
+    // post token
+    app.post('/login', async(req ,res) =>{
+      const email = req.body.email;     
+      const token =jwt.sign(email, process.env.ACCESS_TOKEN_SECRET)  
+      res.send({token})
+    })
+
+    // Use total products
     app.get('/products', async (req, res) => {
       const query = {};
       const cursor = collection.find(query)
@@ -37,8 +45,8 @@ async function run() {
     })
     // update data
     app.put('/products/:id', async(req, res) =>{
-      const id =req.params.id;
-      const userUpdate = req.body;
+      const id =req.params.id;      
+      const userUpdate = req.body;     
       const filter ={ _id: ObjectId(id) }
       const option ={ upsert:true}
       const userDoc ={

@@ -1,12 +1,17 @@
 const express = require('express');
 const cors = require('cors');
-let cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require("jsonwebtoken");
 const app = express()
 const port = process.env.PORT || 5000;
 require('dotenv').config()
 app.use(cors())
+const corsConfig = {
+  origin: true,
+  credentials: true,
+  }
+  app.use(cors(corsConfig))
+  app.options('*', cors(corsConfig))
 app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.emy94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -15,23 +20,7 @@ const collection = client.db("laptopStore").collection("laptopProduct");
 async function run() {
   try {
     await client.connect();
-
-    // function  JWTVarify (req, res, next){
-    //   const authHeaders = req.headers.authorization
-    //   if(!authHeaders){
-    //     return res.status(401).send({message:"Unauthorized access"})
-    //   }
-    //   const accesstoken = authHeaders.split(" ")[1]     
-    //   jwt.verify(accesstoken, process.env.ACCESS_TOKEN_SECRET, (err , decoded) =>{
-    //       if(err){
-    //         return res.status(403).send({message:"Forbidden access"})
-    //       }
-    //       console.log("decond" , decoded)
-    //       req.decoded = decoded
-    //     })
-    //   next()
-    // }
-    // post token
+    
     app.post('/login', async(req ,res) =>{
       const email = req.body.email;     
       const token =jwt.sign(email, process.env.ACCESS_TOKEN_SECRET)  
@@ -46,11 +35,9 @@ async function run() {
       res.send(result)
     })
     // use to email and email user add details
-    app.get('/myproducts',  async(req,res)=>{
-      
+    app.get('/myproducts',  async(req,res)=>{      
       const email=  req.query.email;
       const query= {email}
-
       const  cursor= collection.find(query)
       const result= await cursor.toArray()
       res.send(result)
